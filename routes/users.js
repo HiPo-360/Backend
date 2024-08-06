@@ -75,49 +75,17 @@ module.exports = (database) => {
     }
   });
 
-
-
-// // Endpoint for answering onboarding questions
-//   router.post('/:id/onboarding/:questionNumber', async (req, res) => {
-//     const { id, questionNumber } = req.params;
-//     const { answer } = req.body;
-
-//     if (!answer) {
-//       return res.status(400).json({ message: 'Answer is required' });
-//     }
-
-//     if (isNaN(questionNumber) || questionNumber < 1 || questionNumber > 10) {
-//       return res.status(400).json({ message: 'Invalid question number' });
-//     }
-
-//     try {
-//       const result = await usersCollection.updateOne(
-//         { _id: new ObjectId(id) },
-//         { $set: { [`onboarding.question${questionNumber}`]: answer } }
-//       );
-
-//       if (result.matchedCount === 0) {
-//         return res.status(404).json({ message: 'User not found' });
-//       }
-
-//       res.status(200).json({ message: `Answer for question ${questionNumber} updated` });
-//     } catch (err) {
-//       console.error(`Error updating answer for question ${questionNumber}:`, err);
-//       res.status(500).json({ message: `Error updating answer for question ${questionNumber}`, error: err });
-//     }
-//   });
-
- // Endpoint for onboarding data with multiple questions
+  // Endpoint for onboarding questions
   router.post('/:id/onboardingQuestions', async (req, res) => {
     const { id } = req.params;
     const { q1, q2, q3, q4, q5, q6, q7, q8 } = req.body;
 
-    if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8 ) {
+    if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8) {
       return res.status(400).json({ message: 'All questions are required' });
     }
 
     try {
-      const onboardingData = {
+      const questionsData = {
         q1,
         q2,
         q3,
@@ -130,21 +98,19 @@ module.exports = (database) => {
 
       const result = await usersCollection.updateOne(
         { _id: new ObjectId(id) },
-        { $set: { onboarding: onboardingData } }
+        { $set: { questions: questionsData } }
       );
 
       if (result.matchedCount === 0) {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      res.status(200).json({ message: 'Onboarding data updated' });
+      res.status(200).json({ message: 'Onboarding questions updated' });
     } catch (err) {
-      console.error('Error updating onboarding data:', err);
-      res.status(500).json({ message: 'Error updating onboarding data', error: err });
+      console.error('Error updating onboarding questions:', err);
+      res.status(500).json({ message: 'Error updating onboarding questions', error: err });
     }
   });
-
-
 
 
 
