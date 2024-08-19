@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 const userRoutes = require('./routes/users'); // Import the routes
 const adminRoutes = require('./routes/admin');
+const openaiRoutes = require('./routes/openai');
 
 const app = express();
 const port = 3000;
@@ -29,6 +30,7 @@ async function main() {
     // Use the user routes and pass the database as a parameter
     app.use('/users', userRoutes(database));
     app.use('/admin', adminRoutes(database));
+    app.use('/openai', openaiRoutes(database));
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
