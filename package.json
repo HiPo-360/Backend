@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node start "
+    "start": "node start",
+    "deploy": "npm install && npm start"
   },
   "author": "",
   "license": "ISC",
