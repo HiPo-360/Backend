@@ -7,7 +7,7 @@ const adminRoutes = require('./routes/admin');
 const openaiRoutes = require('./routes/openai');
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // MongoDB connection URI
 const uri = "mongodb+srv://hipo:hipo@hipo.ia7ctsa.mongodb.net/?retryWrites=true&w=majority&appName=HiPo";
