@@ -30,7 +30,7 @@ async function main() {
     // Use the user routes and pass the database as a parameter
     app.use('/users', userRoutes(database));
     app.use('/admin', adminRoutes(database));
-    app.use('/openai', openaiRoutes(database));
+    // app.use('/openai', openaiRoutes(database));
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);

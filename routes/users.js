@@ -6,6 +6,11 @@ const { ObjectId } = require('mongodb'); // Import ObjectId from mongodb
 module.exports = (database) => {
   const usersCollection = database.collection('users'); // the users collection
 
+
+// app.get('/', (req, res) => {
+//   res.send('Hello World!');
+// });
+
   // Endpoint to get all users
   router.get('/', async (req, res) => {
     try {

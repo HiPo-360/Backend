@@ -79,6 +79,8 @@ set2 = [
     "Trying out new recipes is enjoyable."
 ]
 
+
+
 # Function to compare sentences for similarity
 def compare_sentences(sentence1, sentence2):
     prompt = f"Determine if the following two sentences are similar or have the same meaning:\n\nSentence 1: {sentence1}\nSentence 2: {sentence2}\n\nAre these sentences similar or not? Please provide a brief explanation."

@@ -31,6 +31,7 @@ prompts = [
     "Based on the following answer, provide detailed insights and analysis on handling team conflict:"
 ]
 
+
 # Function to generate insights for a question and answer pair
 def generate_insights(prompt, question, answer):
     full_prompt = f"{prompt}\n\nQuestion: {question}\nAnswer: {answer}\n\nInsights:"
