@@ -7,6 +7,7 @@ const adminRoutes = require('./routes/admin');
 const openaiRoutes = require('./routes/openai');
 
 const app = express();
+
 const port = 8080;
 
 // MongoDB connection URI
