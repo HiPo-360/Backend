@@ -7,9 +7,9 @@ module.exports = (database) => {
   const usersCollection = database.collection('users'); // the users collection
 
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!');
-// });
+router.get('/', (req, res) => {
+  res.send('thes the api user route');
+});
 
   // Endpoint to get all users
   router.get('/', async (req, res) => {
@@ -46,14 +46,19 @@ module.exports = (database) => {
       res.status(500).json({ message: 'Error creating user', error: err });
     }
   });
+
   // Endpoint for onboarding data
+  
   router.post('/:id/onboarding', async (req, res) => {
     const { id } = req.params;
     const { role, experience, location, desire, career } = req.body;
 
+
+
     if (!role || !experience || !location || !desire || !career) {
       return res.status(400).json({ message: 'All fields are required' });
     }
+
 
     try {
       const onboardingData = {

@@ -32,6 +32,9 @@ async function main() {
     app.use('/users', userRoutes(database));
     // app.use('/admin', adminRoutes(database));
     // app.use('/openai', openaiRoutes(database));
+    app.get('/', (req, res) => {
+      res.send('thes the api working');
+    });
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
