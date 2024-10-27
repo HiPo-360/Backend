@@ -48,42 +48,43 @@ router.get('/', (req, res) => {
   });
 
   // Endpoint for onboarding data
-  
   router.post('/:id/onboarding', async (req, res) => {
-    const { id } = req.params;
-    const { role, experience, location, desire, career } = req.body;
+  const { id } = req.params;
+  const { username, country, whatLooking, industry, functionInCompany, currentRole, experience, profilePic } = req.body;
 
+  // Check if all required fields are present
+  if (!username || !country || !whatLooking || !industry || !functionInCompany || !currentRole || !experience || !profilePic) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
+  try {
+    const onboardingData = {
+      username,
+      country,
+      whatLooking,
+      industry,
+      functionInCompany,
+      currentRole,
+      experience,
+      profilePic
+    };
 
-    if (!role || !experience || !location || !desire || !career) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { onboarding: onboardingData } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
+    res.status(200).json({ message: 'Onboarding data updated' });
+  } catch (err) {
+    console.error('Error updating onboarding data:', err);
+    res.status(500).json({ message: 'Error updating onboarding data', error: err });
+  }
+});
 
-    try {
-      const onboardingData = {
-        role,
-        experience,
-        location,
-        desire,
-        career
-      };
-
-      const result = await usersCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { onboarding: onboardingData } }
-      );
-
-      if (result.matchedCount === 0) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.status(200).json({ message: 'Onboarding data updated' });
-    } catch (err) {
-      console.error('Error updating onboarding data:', err);
-      res.status(500).json({ message: 'Error updating onboarding data', error: err });
-    }
-  });
 
   // Endpoint for onboarding questions
   router.post('/:id/onboardingQuestions', async (req, res) => {
