@@ -215,10 +215,10 @@ router.post('/:id/upload-pdfs', async (req, res) => {
 // POST endpoint for self-survey questions
 router.post('/:id/selfSurveyQuestions', async (req, res) => {
   const { id } = req.params;
-  const { q1, q2, q3, q4, q5, q6, q7, q8 } = req.body;
+  const { q1, q2, q3, q4, q5, q6, q7, q8,q9 } = req.body;
 
   // Check if all questions are provided
-  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8) {
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8 ||!q9) {
     return res.status(400).json({ message: 'All questions are required' });
   }
 
@@ -243,6 +243,7 @@ router.post('/:id/selfSurveyQuestions', async (req, res) => {
       q6,
       q7,
       q8,
+      q9,
     };
 
     const result = await usersCollection.updateOne(
