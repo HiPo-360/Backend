@@ -85,6 +85,45 @@ router.get('/', (req, res) => {
   }
 });
 
+router.post('/:id/upload-pdfs', async (req, res) => {
+  const { id } = req.params;
+  const { pdfs } = req.body; // Expecting an array of { pdfName, pdfDate, pdfFile }
+
+  // Check if pdfs array is present and has at least one entry
+  if (!Array.isArray(pdfs) || pdfs.length === 0) {
+    return res.status(400).json({ message: 'At least one PDF entry is required' });
+  }
+
+  // Validate each PDF entry
+  for (const pdf of pdfs) {
+    const { pdfName, pdfDate, pdfFile } = pdf;
+    if (!pdfName || !pdfDate || !pdfFile) {
+      return res.status(400).json({ message: 'All fields (pdfName, pdfDate, pdfFile) are required for each PDF' });
+    }
+  }
+
+  try {
+    const pdfData = pdfs.map(({ pdfName, pdfDate, pdfFile }) => ({
+      pdfName,
+      pdfDate,
+      pdfFile
+    }));
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { pdfs: pdfData } } // Save the array of PDFs
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'PDFs uploaded successfully' });
+  } catch (err) {
+    console.error('Error uploading PDFs:', err);
+    res.status(500).json({ message: 'Error uploading PDFs', error: err });
+  }
+});
 
   // Endpoint for onboarding questions
   router.post('/:id/onboardingQuestions', async (req, res) => {
