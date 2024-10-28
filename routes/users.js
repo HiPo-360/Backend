@@ -212,6 +212,75 @@ router.post('/:id/upload-pdfs', async (req, res) => {
 
 
 
+// POST endpoint for self-survey questions
+router.post('/:id/selfSurveyQuestions', async (req, res) => {
+  const { id } = req.params;
+  const { q1, q2, q3, q4, q5, q6, q7, q8 } = req.body;
+
+  // Check if all questions are provided
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8) {
+    return res.status(400).json({ message: 'All questions are required' });
+  }
+
+  try {
+    // Prepare questions data
+    const questionsData = {
+      // Uncomment the following lines to split the questions if needed
+      // q1: q1.split(',').map(q => q.trim()),
+      // q2: q2.split(',').map(q => q.trim()),
+      // q3: q3.split(',').map(q => q.trim()),
+      // q4: q4.split(',').map(q => q.trim()),
+      // q5: q5.split(',').map(q => q.trim()),
+      // q6: q6.split(',').map(q => q.trim()),
+      // q7: q7.split(',').map(q => q.trim()),
+      // q8: q8.split(',').map(q => q.trim()),
+
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+      q8,
+    };
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { selfSurveyQuestions: questionsData } } // Changed to selfSurveyQuestions
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Self-survey questions updated' });
+  } catch (err) {
+    console.error('Error updating self-survey questions:', err);
+    res.status(500).json({ message: 'Error updating self-survey questions', error: err });
+  }
+});
+
+// GET endpoint for self-survey questions
+router.get('/:id/selfSurveyQuestions', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await usersCollection.findOne({ _id: new ObjectId(id) }, { projection: { selfSurveyQuestions: 1 } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user.selfSurveyQuestions);
+  } catch (err) {
+    console.error('Error retrieving self-survey questions:', err);
+    res.status(500).json({ message: 'Error retrieving self-survey questions', error: err });
+  }
+});
+
+
+
   // Endpoint for onboarding questions
   router.post('/:id/onboardingQuestions', async (req, res) => {
     const { id } = req.params;
