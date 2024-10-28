@@ -85,6 +85,50 @@ router.get('/', (req, res) => {
   }
 });
 
+
+// router.post('/:id/upload-pdfs', async (req, res) => {
+//   const { id } = req.params;
+//   const { pdfs } = req.body; // Expecting an array of { pdfName, pdfDate, pdfFile }
+
+//   // Check if pdfs array is present and has at least one entry
+//   if (!Array.isArray(pdfs) || pdfs.length === 0) {
+//     return res.status(400).json({ message: 'At least one PDF entry is required' });
+//   }
+
+//   // Validate each PDF entry
+//   for (const pdf of pdfs) {
+//     const { pdfName, pdfDate, pdfFile } = pdf;
+//     if (!pdfName || !pdfDate || !pdfFile) {
+//       return res.status(400).json({ message: 'All fields (pdfName, pdfDate, pdfFile) are required for each PDF' });
+//     }
+//   }
+
+//   try {
+//     const pdfData = pdfs.map(({ pdfName, pdfDate, pdfFile }) => ({
+//       pdfName,
+//       pdfDate,
+//       pdfFile
+//     }));
+
+//     const result = await usersCollection.updateOne(
+//       { _id: new ObjectId(id) },
+//       { $set: { pdfs: pdfData } } // Save the array of PDFs
+//     );
+
+//     if (result.matchedCount === 0) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.status(200).json({ message: 'PDFs uploaded successfully' });
+//   } catch (err) {
+//     console.error('Error uploading PDFs:', err);
+//     res.status(500).json({ message: 'Error uploading PDFs', error: err });
+//   }
+// });
+
+
+
+
 router.post('/:id/upload-pdfs', async (req, res) => {
   const { id } = req.params;
   const { pdfs } = req.body; // Expecting an array of { pdfName, pdfDate, pdfFile }
@@ -94,21 +138,41 @@ router.post('/:id/upload-pdfs', async (req, res) => {
     return res.status(400).json({ message: 'At least one PDF entry is required' });
   }
 
-  // Validate each PDF entry
+  // Split the concatenated strings by commas and validate each PDF entry
+  const pdfData = [];
   for (const pdf of pdfs) {
     const { pdfName, pdfDate, pdfFile } = pdf;
-    if (!pdfName || !pdfDate || !pdfFile) {
-      return res.status(400).json({ message: 'All fields (pdfName, pdfDate, pdfFile) are required for each PDF' });
+
+    // Split the concatenated strings
+    const pdfNames = pdfName.split(',').map(name => name.trim());
+    const pdfDates = pdfDate.split(',').map(date => date.trim());
+    const pdfFiles = pdfFile.split(',').map(file => file.trim());
+
+    // Ensure lengths of all arrays are the same
+    if (pdfNames.length !== pdfDates.length || pdfNames.length !== pdfFiles.length) {
+      return res.status(400).json({ message: 'Mismatch in number of pdfName, pdfDate, and pdfFile entries' });
+    }
+
+    // Validate and add each entry
+    for (let i = 0; i < pdfNames.length; i++) {
+      if (!pdfNames[i] || !pdfDates[i] || !pdfFiles[i]) {
+        return res.status(400).json({ message: 'All fields (pdfName, pdfDate, pdfFile) are required for each PDF' });
+      }
+
+      // Check for duplicate PDF files
+      if (pdfData.some(pdfEntry => pdfEntry.pdfFile === pdfFiles[i])) {
+        return res.status(400).json({ message: `Duplicate PDF file detected: ${pdfFiles[i]}` });
+      }
+
+      pdfData.push({
+        pdfName: pdfNames[i],
+        pdfDate: pdfDates[i],
+        pdfFile: pdfFiles[i]
+      });
     }
   }
 
   try {
-    const pdfData = pdfs.map(({ pdfName, pdfDate, pdfFile }) => ({
-      pdfName,
-      pdfDate,
-      pdfFile
-    }));
-
     const result = await usersCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: { pdfs: pdfData } } // Save the array of PDFs
@@ -124,6 +188,11 @@ router.post('/:id/upload-pdfs', async (req, res) => {
     res.status(500).json({ message: 'Error uploading PDFs', error: err });
   }
 });
+
+
+
+
+
 
   // Endpoint for onboarding questions
   router.post('/:id/onboardingQuestions', async (req, res) => {
