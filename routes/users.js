@@ -225,16 +225,7 @@ router.post('/:id/selfSurveyQuestions', async (req, res) => {
   try {
     // Prepare questions data
     const questionsData = {
-      // Uncomment the following lines to split the questions if needed
-      // q1: q1.split(',').map(q => q.trim()),
-      // q2: q2.split(',').map(q => q.trim()),
-      // q3: q3.split(',').map(q => q.trim()),
-      // q4: q4.split(',').map(q => q.trim()),
-      // q5: q5.split(',').map(q => q.trim()),
-      // q6: q6.split(',').map(q => q.trim()),
-      // q7: q7.split(',').map(q => q.trim()),
-      // q8: q8.split(',').map(q => q.trim()),
-
+     
       q1,
       q2,
       q3,
