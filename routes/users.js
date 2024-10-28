@@ -128,7 +128,6 @@ router.get('/', (req, res) => {
 
 
 
-
 router.post('/:id/upload-pdfs', async (req, res) => {
   const { id } = req.params;
   const { pdfs } = req.body; // Expecting an array of { pdfName, pdfDate, pdfFile }
@@ -137,17 +136,30 @@ router.post('/:id/upload-pdfs', async (req, res) => {
   if (!Array.isArray(pdfs) || pdfs.length === 0) {
     return res.status(400).json({ message: 'At least one PDF entry is required' });
   }
-
+ // Function to split dates safely
+  const splitDatesSafely = (dates) => {
+    const dateRegex = /\w{3} \d{1,2}, \d{4} \d{1,2}:\d{2} (am|pm)/g;
+    return dates.match(dateRegex) || [];
+  };
   // Split the concatenated strings by commas and validate each PDF entry
   const pdfData = [];
   for (const pdf of pdfs) {
     const { pdfName, pdfDate, pdfFile } = pdf;
+    console.log('Original pdfName:', pdfName);
+    console.log('Original pdfDate:', pdfDate);
+    console.log('Original pdfFile:', pdfFile);
 
     // Split the concatenated strings
     const pdfNames = pdfName.split(',').map(name => name.trim());
-    const pdfDates = pdfDate.split(',').map(date => date.trim());
+    const pdfDates = splitDatesSafely(pdfDate);
     const pdfFiles = pdfFile.split(',').map(file => file.trim());
 
+    console.log('Splitted pdfNames:', pdfNames);
+    console.log('Splitted pdfDates:', pdfDates);
+    console.log('Splitted pdfFiles:', pdfFiles);
+    console.log('Splitted pdfNames:', pdfNames.length);
+    console.log('Splitted pdfDates:', pdfDates.length);
+    console.log('Splitted pdfFiles:', pdfFiles.length);
     // Ensure lengths of all arrays are the same
     if (pdfNames.length !== pdfDates.length || pdfNames.length !== pdfFiles.length) {
       return res.status(400).json({ message: 'Mismatch in number of pdfName, pdfDate, and pdfFile entries' });
@@ -159,9 +171,9 @@ router.post('/:id/upload-pdfs', async (req, res) => {
         return res.status(400).json({ message: 'All fields (pdfName, pdfDate, pdfFile) are required for each PDF' });
       }
 
-      // Check for duplicate PDF files
+      // Ensure no duplicate PDF files
       if (pdfData.some(pdfEntry => pdfEntry.pdfFile === pdfFiles[i])) {
-        return res.status(400).json({ message: `Duplicate PDF file detected: ${pdfFiles[i]}` });
+        continue; // Skip duplicate PDF files
       }
 
       pdfData.push({
@@ -190,6 +202,12 @@ router.post('/:id/upload-pdfs', async (req, res) => {
 });
 
 
+ 
+      // Check for duplicate PDF files
+      // if (pdfData.some(pdfEntry => pdfEntry.pdfFile === pdfFiles[i])) {
+      //   return res.status(400).json({ message: `Duplicate PDF file detected: ${pdfFiles[i]}` });
+      // }
+ 
 
 
 
