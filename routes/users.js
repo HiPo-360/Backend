@@ -272,61 +272,186 @@ router.get('/:id/selfSurveyQuestions', async (req, res) => {
 });
 
 
+// POST endpoint for family and friends survey questions
+router.post('/:id/familyFriendsQuestions', async (req, res) => {
+  const { id } = req.params;
+  const { q1, q2, q3, q4, q5, q6, q7 } = req.body;
 
-  // Endpoint for onboarding questions
-  router.post('/:id/onboardingQuestions', async (req, res) => {
-    const { id } = req.params;
-    const { q1, q2, q3, q4, q5, q6, q7, q8,q9 } = req.body;
+  // Check if all questions are provided
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7) {
+    return res.status(400).json({ message: 'All questions are required' });
+  }
 
-    if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8||!q9) {
-      return res.status(400).json({ message: 'All questions are required' });
+  try {
+    // Prepare questions data
+    const questionsData = {
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+    };
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { familyFriendsQuestions: questionsData } } // Updated to familyFriendsQuestions
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    try {
-      const questionsData = {
-        q1,
-        q2,
-        q3,
-        q4,
-        q5,
-        q6,
-        q7,
-        q8,
-        q9,
-      };
+    res.status(200).json({ message: 'Family and friends survey questions updated' });
+  } catch (err) {
+    console.error('Error updating family and friends survey questions:', err);
+    res.status(500).json({ message: 'Error updating family and friends survey questions', error: err });
+  }
+});
 
-      const result = await usersCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { questions: questionsData } }
-      );
-
-      if (result.matchedCount === 0) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.status(200).json({ message: 'Onboarding questions updated' });
-    } catch (err) {
-      console.error('Error updating onboarding questions:', err);
-      res.status(500).json({ message: 'Error updating onboarding questions', error: err });
-    }
-  });
-
-// Endpoint to get all onboarding questions for a specific user
-router.get('/:id/onboardingQuestions', async (req, res) => {
+// GET endpoint for family and friends survey questions
+router.get('/:id/familyFriendsQuestions', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await usersCollection.findOne({ _id: new ObjectId(id) }, { projection: { questions: 1 } });
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { familyFriendsQuestions: 1 } }
+    );
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json(user.questions);
+    res.status(200).json(user.familyFriendsQuestions);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching onboarding questions', error: err });
+    console.error('Error retrieving family and friends survey questions:', err);
+    res.status(500).json({ message: 'Error retrieving family and friends survey questions', error: err });
   }
 });
+
+ // POST endpoint for manager survey questions
+router.post('/:id/managerQuestions', async (req, res) => {
+  const { id } = req.params;
+  const { q1, q2, q3, q4, q5, q6, q7, q8, q9 } = req.body;
+
+  // Check if all questions are provided
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8 || !q9) {
+    return res.status(400).json({ message: 'All questions are required' });
+  }
+
+  try {
+    // Prepare questions data
+    const questionsData = {
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+      q8,
+      q9,
+    };
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { managerQuestions: questionsData } } // Updated to managerQuestions
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Manager survey questions updated' });
+  } catch (err) {
+    console.error('Error updating manager survey questions:', err);
+    res.status(500).json({ message: 'Error updating manager survey questions', error: err });
+  }
+});
+
+// GET endpoint for manager survey questions
+router.get('/:id/managerQuestions', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { managerQuestions: 1 } }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user.managerQuestions);
+  } catch (err) {
+    console.error('Error retrieving manager survey questions:', err);
+    res.status(500).json({ message: 'Error retrieving manager survey questions', error: err });
+  }
+});
+
+
+// POST endpoint for reportees survey questions
+router.post('/:id/reporteesQuestions', async (req, res) => {
+  const { id } = req.params;
+  const { q1, q2, q3, q4, q5, q6, q7 } = req.body;
+
+  // Check if all questions are provided
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7) {
+    return res.status(400).json({ message: 'All questions are required' });
+  }
+
+  try {
+    // Prepare questions data
+    const questionsData = {
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+    };
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { reporteesQuestions: questionsData } } // Updated to reporteesQuestions
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Reportees survey questions updated' });
+  } catch (err) {
+    console.error('Error updating reportees survey questions:', err);
+    res.status(500).json({ message: 'Error updating reportees survey questions', error: err });
+  }
+});
+
+// GET endpoint for reportees survey questions
+router.get('/:id/reporteesQuestions', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { reporteesQuestions: 1 } }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user.reporteesQuestions);
+  } catch (err) {
+    console.error('Error retrieving reportees survey questions:', err);
+    res.status(500).json({ message: 'Error retrieving reportees survey questions', error: err });
+  }
+});
+
 
 
   return router;
