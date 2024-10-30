@@ -451,6 +451,64 @@ router.get('/:id/reporteesQuestions', async (req, res) => {
     res.status(500).json({ message: 'Error retrieving reportees survey questions', error: err });
   }
 });
+// POST endpoint for reportees survey questions
+router.post('/:id/colleaguesQuestions' , async (req, res) => {
+  const { id } = req.params;
+  const { q1, q2, q3, q4, q5, q6, q7 } = req.body;
+
+  // Check if all questions are provided
+  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7) {
+    return res.status(400).json({ message: 'All questions are required' });
+  }
+
+  try {
+    // Prepare questions data
+    const questionsData = {
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+    };
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { colleaguesQuestions: questionsData } } // Updated to vcolleaguesQuestions
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Reportees survey questions updated' });
+  } catch (err) {
+    console.error('Error updating reportees survey questions:', err);
+    res.status(500).json({ message: 'Error updating reportees survey questions', error: err });
+  }
+});
+
+// GET endpoint for reportees survey questions
+router.get('/:id/colleaguesQuestions', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { colleaguesQuestions: 1 } }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user.colleaguesQuestions);
+  } catch (err) {
+    console.error('Error retrieving colleagues survey questions:', err);
+    res.status(500).json({ message: 'Error retrieving colleagues survey questions', error: err });
+  }
+});
 
 
 
