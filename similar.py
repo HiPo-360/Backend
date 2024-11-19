@@ -56,9 +56,18 @@ import os
 from openai import AzureOpenAI
 
 # Directly provide the endpoint and deployment values
-endpoint = "https://hipo-openai.openai.azure.com/"
-deployment = "openai-test"
-api_key = "0f534cc13f2e43e884220e0bdbcd6723"  # Replace with your actual API key
+# endpoint = "https://hipo-openai.openai.azure.com/"
+# deployment = "openai-test"
+# api_key = "0f534cc13f2e43e884220e0bdbcd6723"  # Replace with your actual API key
+
+
+# Directly provide the endpoint and deployment values
+# endpoint = "https://hipo-openai.openai.azure.com/"
+endpoint = "https://hipo-ai.openai.azure.com/"
+# deployment = "openai-test"
+deployment = "gpt-4"
+# api_key = "0f534cc13f2e43e884220e0bdbcd6723"  # Replace with your actual API key
+api_key = "1Uty3zR2yIuFmz75r9nDwkAh3mLbNbWZu4XlFDn6AjBoP9foaAE0JQQJ99AJACYeBjFXJ3w3AAAAACOGOqBp"  # Replace with your actual API key
 
 client = AzureOpenAI(
     azure_endpoint=endpoint,

@@ -215,10 +215,10 @@ router.post('/:id/upload-pdfs', async (req, res) => {
 // POST endpoint for self-survey questions
 router.post('/:id/selfSurveyQuestions', async (req, res) => {
   const { id } = req.params;
-  const { q1, q2, q3, q4, q5, q6, q7, q8,q9 } = req.body;
+  const { q1,q1B, q2, q3, q4, q5, q6, q7, q8,q9 } = req.body;
 
   // Check if all questions are provided
-  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8 ||!q9) {
+  if (!q1 || !q1B || !q2 || !q3 || !q4 || !q5 || !q6 || !q7 || !q8 ||!q9) {
     return res.status(400).json({ message: 'All questions are required' });
   }
 
@@ -227,6 +227,7 @@ router.post('/:id/selfSurveyQuestions', async (req, res) => {
     const questionsData = {
      
       q1,
+      q1B,
       q2,
       q3,
       q4,
@@ -451,6 +452,8 @@ router.get('/:id/reporteesQuestions', async (req, res) => {
     res.status(500).json({ message: 'Error retrieving reportees survey questions', error: err });
   }
 });
+
+
 // POST endpoint for reportees survey questions
 router.post('/:id/colleaguesQuestions' , async (req, res) => {
   const { id } = req.params;
